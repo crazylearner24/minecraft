@@ -1,0 +1,26 @@
+name: Backup World
+
+on:
+  workflow_dispatch:
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Archive world
+        run: |
+          mkdir -p world_backups
+          if [ -d world ]; then
+            zip -r world_backups/world.zip world
+          else
+            echo "No world directory found; creating placeholder."
+            touch world_backups/no-world-found.txt
+          fi
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: minecraft-world
+          path: world_backups/
